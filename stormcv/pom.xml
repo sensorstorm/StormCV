@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.tno</groupId>
+	<artifactId>stormcv</artifactId>
+	<version>0.7.0</version>
+	<name>StormCV</name>
+	<description>A Storm contribution to ease the development of computer vision topologies</description>
+	<url>https://github.com/sensorstorm/StormCV</url>
+	<packaging>jar</packaging>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>corneversloot</id>
+			<name>Corne Versloot</name>
+			<organization>TNO</organization>
+			<organizationUrl>http://www.tno.nl</organizationUrl>
+		</developer>
+		<developer>
+			<name>John Schavemaker</name>
+			<organization>TNO</organization>
+			<organizationUrl>http://www.tno.nl</organizationUrl>
+		</developer>
+		<developer>
+			<name>Maarten Kruithof</name>
+			<organization>TNO</organization>
+			<organizationUrl>http://www.tno.nl</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+	  <connection>scm:git:git@github.com:sensorstorm/StormCV.git</connection>
+	  <developerConnection>scm:git:git@github.com:sensorstorm/StormCV.git</developerConnection>
+	  <url>git@github.com:sensorstorm/StormCV.git</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>StormCV repo</id>
+			<url>http://github.com/sensorstorm/maven/raw/master/releases/</url>
+		</repository>
+		<repository>
+			<id>xuggle repo</id>
+			<url>http://xuggle.googlecode.com/svn/trunk/repo/share/java/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.storm</groupId>
+			<artifactId>storm-core</artifactId>
+			<version>0.9.2-incubating</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org</groupId>
+			<artifactId>opencv</artifactId>
+			<version>2.4.8</version>
+		</dependency>
+		<dependency>
+			<groupId>xuggle</groupId>
+			<artifactId>xuggle-xuggler</artifactId>
+			<version>5.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.4.7</version> <!-- 1.7.2 is latest version but httpclient version conflicts with storm (4.1 <> 4.2) -->
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.18</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+	</dependencies>
+</project>
