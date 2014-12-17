@@ -1,5 +1,5 @@
 ## StormCV
-StormCV enables the use of Storm for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. The screenshot below is taken from a distributed pipeline that calculates SIFT and SURF features on live streams. 
+StormCV enables the use of Storm for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. The screenshot below is taken from a distributed pipeline that calculates SIFT and SURF features in real time on six live streams. 
 ![example output](https://github.com/sensorstorm/StormCV/wiki/deployed_output.png)
 Please see the [Wiki](https://github.com/sensorstorm/StormCV/wiki) for more information on the platform and pointers how to get started.
 
