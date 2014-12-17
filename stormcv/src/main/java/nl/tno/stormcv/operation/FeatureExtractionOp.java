@@ -23,7 +23,10 @@ import nl.tno.stormcv.model.serializer.*;
  * An operation used to detect and describe a wide variety of features using the OpenCV FeatureExtraction and 
  * DescriptorExtractor functions. The name, detector type and extractor type must be provided upon construction.
  * Operation on a single frame results in a single {@link Feature} instance containing a (possibly empty) set of
- * {@link Descriptor}'s. Descriptor length depends on the descriptor type used. 
+ * {@link Descriptor}'s. Descriptor length depends on the descriptor type used.
+ * 
+ * Depending on its configuration this operation can use non-free functions from the OpenCV library which <b><i>may be patented in
+ *  some countries or have some other limitations on the use±!</i></b> See <a href="http://docs.opencv.org/modules/nonfree/doc/nonfree.html">this page</a>.
  * 
  * @author Corne Versloot
  *
