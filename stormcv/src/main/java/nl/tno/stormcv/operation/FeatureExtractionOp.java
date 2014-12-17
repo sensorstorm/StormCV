@@ -26,7 +26,7 @@ import nl.tno.stormcv.model.serializer.*;
  * {@link Descriptor}'s. Descriptor length depends on the descriptor type used.
  * 
  * Depending on its configuration this operation can use non-free functions from the OpenCV library which <b><i>may be patented in
- *  some countries or have some other limitations on the use±!</i></b> See <a href="http://docs.opencv.org/modules/nonfree/doc/nonfree.html">this page</a>.
+ *  some countries or have some other limitations on the use!</i></b> See <a href="http://docs.opencv.org/modules/nonfree/doc/nonfree.html">this page</a>.
  * 
  * @author Corne Versloot
  *
