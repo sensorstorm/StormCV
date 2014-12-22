@@ -62,21 +62,10 @@ public class S3Connector implements FileConnector {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void prepare(Map stormConf) throws DatatypeConfigurationException{
-		if(!stormConf.containsKey(S3_KEY)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_KEY not set!"); 
-		if(!stormConf.containsKey(S3_SECRET)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_SECRET not set!");
+		if(!stormConf.containsKey(S3_KEY) || !stormConf.containsKey(S3_SECRET)) throw new DatatypeConfigurationException("S3 Key or Secret are not set!"); 
 		s3Key = (String)stormConf.get(S3_KEY);
 		s3Secret = (String)stormConf.get(S3_SECRET);
 		this.s3 = new AmazonS3Client(new BasicAWSCredentials(s3Key, s3Secret));
-	}
-	
-	public S3Connector s3Key(String key){
-		this.s3Key = key;
-		return this;
-	}
-	
-	public S3Connector s3Secret(String secret){
-		this.s3Secret = secret;
-		return this;
 	}
 	
 	@Override
