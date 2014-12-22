@@ -91,6 +91,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 					mediaReader = ToolFactory.makeReader(streamLocation);
 				}else if(videoList != null){
 					// read next video from the list or block until one is available
+					logger.info("Waiting for new file to be downloaded...");
 					streamLocation = videoList.take();
 					
 					if(!useSingleID){
@@ -115,7 +116,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 		        mediaReader.close();
 		        // delete the local file (if it is in tmp dir)
 		        if(videoList != null){
-		        	File localFile = new File(mediaReader.getUrl());
+		        	File localFile = new File(streamLocation);
 		        	if(localFile.getAbsolutePath().startsWith(tmpDir)){
 		        		localFile.delete();
 		        	}

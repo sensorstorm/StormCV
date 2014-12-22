@@ -17,6 +17,7 @@ import backtype.storm.tuple.Tuple;
  * <li>file:// - is used to point to the local filesystem (typically used in local modes for testing)</li>
  * <li>s3:// - is used to point to an AWS S3 location as follows: S3://bucket/key</li>
  * <li>classpath:// - is used to point to a file on the classpath (can be inside a jar as well)</li>
+ * <li>ftp:// - is used to point to a location on a FTP server</li>
  * </ul>
  * 
  * @author Corne Versloot
@@ -46,16 +47,6 @@ public class StormCVConfig extends Config{
 	 * <b>Integer (default = 500)</b> configuration parameter setting the maximum number of elements being cached by spouts and bolts (used to avoid memory overload) 
 	 */
 	public static final String STORMCV_CACHES_MAX_SIZE = "stormcv.caches.maxsize";
-	
-	/**
-	 * <b>String (default = NONE)</b> configuration parameter setting the AWS S3 Key to use by the {@link FileFrameFetcher}
-	 */
-	public static final String STORMCV_AWS_S3_KEY = "stormcv.s3.key";
-	
-	/**
-	 * <b>String (default = NONE) </b> configuration parameter setting the AWS S3 Secret {@link FileFrameFetcher}
-	 */
-	public static final String STORMCV_AWS_S3_SECRET = "stormcv.s3.secret";
 	
 	/**
 	 * <b>List<Class) (default = NONE) </b> configuration parameter the available {@link FileConnector} in the topology
@@ -98,6 +89,7 @@ public class StormCVConfig extends Config{
 		ArrayList<String> connectorList = new ArrayList<String>();
 		connectorList.add(LocalFileConnector.class.getName());
 		connectorList.add(S3Connector.class.getName());
+		connectorList.add(FtpConnector.class.getName());
 		connectorList.add(ClasspathConnector.class.getName());
 		put(StormCVConfig.STORMCV_CONNECTORS, connectorList);
 	}

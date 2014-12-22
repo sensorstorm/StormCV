@@ -24,13 +24,23 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 /**
  * A {@link FileConnector} implementation used to access AWS S3 buckets. The S3_KEY and S3_SECRET to be used 
- * must be provided in the {@link StormCVConfig}. This connector is used for locations starting with s3://
+ * must be provided in the {@link StormCVConfig}. This connector is used for locations starting with <b>s3://</b>
  * 
  * @author Corne Versloot
  *
  */
 public class S3Connector implements FileConnector {
 
+	/**
+	 * Configuration key used to set the AWS S3 Key in {@link StormCVConfig}
+	 */
+	public static final String S3_KEY = "stormcv.s3.key";
+	
+	/**
+	 * Configuration key used to set the AWS S3 Secret in {@link StormCVConfig}
+	 */
+	public static final String S3_SECRET = "stormcv.s3.secret";
+	
 	private static final long serialVersionUID = 4829546208475679599L;
 	
 	private static final String PREFIX = "s3";
@@ -52,10 +62,10 @@ public class S3Connector implements FileConnector {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void prepare(Map stormConf) throws DatatypeConfigurationException{
-		if(!stormConf.containsKey(StormCVConfig.STORMCV_AWS_S3_KEY)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_KEY not set!"); 
-		if(!stormConf.containsKey(StormCVConfig.STORMCV_AWS_S3_SECRET)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_SECRET not set!");
-		s3Key = (String)stormConf.get(StormCVConfig.STORMCV_AWS_S3_KEY);
-		s3Secret = (String)stormConf.get(StormCVConfig.STORMCV_AWS_S3_SECRET);
+		if(!stormConf.containsKey(S3_KEY)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_KEY not set!"); 
+		if(!stormConf.containsKey(S3_SECRET)) throw new DatatypeConfigurationException("STORMCV_AWS_S3_SECRET not set!");
+		s3Key = (String)stormConf.get(S3_KEY);
+		s3Secret = (String)stormConf.get(S3_SECRET);
 		this.s3 = new AmazonS3Client(new BasicAWSCredentials(s3Key, s3Secret));
 	}
 	

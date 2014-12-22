@@ -22,7 +22,6 @@ import nl.tno.stormcv.operation.GroupOfFramesOp;
 import nl.tno.stormcv.util.StreamReader;
 import nl.tno.stormcv.util.connector.ConnectorHolder;
 import nl.tno.stormcv.util.connector.FileConnector;
-import nl.tno.stormcv.util.connector.LocalFileConnector;
 
 /**
  * FileFrameFetcher is responsible for extracting frames from video files. These files can reside on any location as long
@@ -181,7 +180,6 @@ public class FileFrameFetcher implements IFetcher<CVParticle> {
 
 	@Override
 	public CVParticle fetchData() {
-		if(streamReader == null) this.activate();
 		Frame frame = frameQueue.poll();
 		if(frame != null) {
 			if(batchSize <= 1){
@@ -195,13 +193,6 @@ public class FileFrameFetcher implements IFetcher<CVParticle> {
 			}
 		}
 		
-		if(streamReader == null || !streamReader.isRunning()){
-			if(streamReader != null){
-				streamReader.stop();
-				streamReader = null;
-			}
-			this.activate();
-		}
 		return null;
 	}
 	
@@ -246,7 +237,6 @@ public class FileFrameFetcher implements IFetcher<CVParticle> {
 				if(connector != null){
 					connector.moveTo(location);
 					File localFile = connector.getAsFile();
-					if(!(connector instanceof LocalFileConnector))localFile.deleteOnExit();
 					videoList.put(localFile.getAbsolutePath());
 				}
 			}catch(Exception e){
