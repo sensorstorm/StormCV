@@ -38,7 +38,7 @@ public static void main(String[] args){
 		 */
 		//conf.put(StormCVConfig.STORMCV_OPENCV_LIB, "mac64_opencv_java248.dylib");
 		
-		conf.setNumWorkers(13); // number of workers in the topology
+		conf.setNumWorkers(4); // number of workers in the topology
 		conf.setMaxSpoutPending(20); // maximum un-acked/un-failed frames per spout (spout blocks if this number is reached)
 		conf.put(StormCVConfig.STORMCV_FRAME_ENCODING, Frame.JPG_IMAGE); // indicates frames will be encoded as JPG throughout the topology (JPG is the default when not explicitly set)
 		conf.put(Config.TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS, true); // True if Storm should timeout messages or not.
@@ -68,10 +68,10 @@ public static void main(String[] args){
 		TopologyBuilder builder = new TopologyBuilder();
 				
 		// number of tasks must match the number of urls!
-		builder.setSpout("spout", new CVParticleSpout( new StreamFrameFetcher(urls).frameSkip(frameSkip) ), 3 ).setNumTasks(6);
+		builder.setSpout("spout", new CVParticleSpout( new StreamFrameFetcher(urls).frameSkip(frameSkip) ), 1 ).setNumTasks(6);
 		
 		// three 'fat' bolts containing a SequentialFrameOperation will will emit a Frame object containing the detected features
-		builder.setBolt("features", new SingleInputBolt( new SequentialFrameOp(operations).outputFrame(true).retainImage(true)), 9)
+		builder.setBolt("features", new SingleInputBolt( new SequentialFrameOp(operations).outputFrame(true).retainImage(true)), 2)
 			.shuffleGrouping("spout");
 		
 		// add bolt that creates a webservice on port 8558 enabling users to view the result
