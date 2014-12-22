@@ -1,1 +1,1 @@
-Directry intended for example output
+Directory intended for example output
