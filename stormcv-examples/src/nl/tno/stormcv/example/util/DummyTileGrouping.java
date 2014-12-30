@@ -24,7 +24,7 @@ public class DummyTileGrouping implements CustomStreamGrouping {
 	
 	@Override
 	public List<Integer> chooseTasks(int taskId, List<Object> values) {
-		String streamId = (String)values.get(1);
+		String streamId = (String)values.get(2);
 		List<Integer> targets = new ArrayList<Integer>();
 		for(String end : accept){
 			if(streamId.endsWith(end)){
