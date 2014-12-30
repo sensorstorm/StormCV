@@ -118,9 +118,9 @@ public class ROIExtractionOp implements ISingleInputOperation<Frame> {
 	public List<Frame> execute(CVParticle input) throws Exception {
 		List<Frame> result = new ArrayList<Frame>();
 		if(!(input instanceof Frame)) return result;
-		Frame sf = (Frame)input;
+		Frame frame = (Frame)input;
 		
-		for(Feature feature : sf.getFeatures()){
+		for(Feature feature : frame.getFeatures()){
 			if(!roisToExtract.contains(feature.getName())) continue;
 			for(Descriptor descriptor : feature.getSparseDescriptors()){
 				Rectangle roi = new Rectangle(descriptor.getBoundingBox());
@@ -135,14 +135,14 @@ public class ROIExtractionOp implements ISingleInputOperation<Frame> {
 					roi.width += 2 * spacing;
 					roi.height += 2 * spacing;
 				}
-				roi = roi.intersection(sf.getBoundingBox());
+				roi = roi.intersection(frame.getBoundingBox());
 				BufferedImage roiImage = null;
-				if(sf.getImage() != null){
-					roiImage = sf.getImage().getSubimage(roi.x, roi.y, roi.width, roi.height);
+				if(frame.getImage() != null){
+					roiImage = frame.getImage().getSubimage(roi.x, roi.y, roi.width, roi.height);
 				}
 				byte[] buffer = ImageUtils.imageToBytes(roiImage, imageType);
-				Frame roiFrame = new Frame(sf.getStreamId()+"_"+result.size(), sf.getSequenceNr(), imageType, buffer, sf.getTimestamp(), roi);
-				roiFrame.getFeatures().addAll(copyFeaturesInROI(roi, sf.getFeatures()));
+				Frame roiFrame = new Frame(frame.getRequestId(), frame.getStreamId()+"_"+result.size(), frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), roi);
+				roiFrame.getFeatures().addAll(copyFeaturesInROI(roi, frame.getFeatures()));
 				result.add(roiFrame);
 			}
 		}

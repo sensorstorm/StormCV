@@ -50,6 +50,7 @@ public class StreamFrameFetcher implements IFetcher<CVParticle>{
 	private String imageType;
 	private int batchSize = 1;
 	private List<Frame> frameGroup;
+	private String id;
 	
 	public StreamFrameFetcher (List<String> locations){
 		this.locations = locations;
@@ -89,8 +90,8 @@ public class StreamFrameFetcher implements IFetcher<CVParticle>{
 	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public void prepare(Map conf, TopologyContext context) throws Exception {
-		
-		int nrTasks = context.getComponentTasks(context.getThisComponentId()).size();
+		this.id = context.getThisComponentId();
+		int nrTasks = context.getComponentTasks(id).size();
 		int taskIndex = context.getThisTaskIndex();
 		
 		if(conf.containsKey(StormCVConfig.STORMCV_FRAME_ENCODING)){
@@ -122,7 +123,7 @@ public class StreamFrameFetcher implements IFetcher<CVParticle>{
 			
 			String streamId = ""+location.hashCode();
 			if(location.contains("/")){
-				streamId = location.substring(location.lastIndexOf("/")+1) + "_" + streamId;
+				streamId = id+"_"+location.substring(location.lastIndexOf("/")+1) + "_" + streamId;
 			}
 			StreamReader reader = new StreamReader(streamId, location, imageType, frameSkip, groupSize, sleepTime, frameQueue);
 			streamReaders.put(location, reader);
@@ -149,7 +150,7 @@ public class StreamFrameFetcher implements IFetcher<CVParticle>{
 				if(frameGroup == null || frameGroup.size() >= batchSize) frameGroup = new ArrayList<Frame>();
 				frameGroup.add(frame);
 				if(frameGroup.size() == batchSize){
-					return new GroupOfFrames(frameGroup.get(0).getStreamId(), frameGroup.get(0).getSequenceNr(), frameGroup);
+					return new GroupOfFrames(Long.MIN_VALUE, frameGroup.get(0).getStreamId(), frameGroup.get(0).getSequenceNr(), frameGroup);
 				}
 			}
 		}

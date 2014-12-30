@@ -137,10 +137,10 @@ public class HaarCascadeOp extends OpenCVOp<CVParticle> implements ISingleInputO
 		ArrayList<Descriptor> descriptors = new ArrayList<Descriptor>();
 		for(Rect rect : haarDetections.toArray()){
 			Rectangle box = new Rectangle(rect.x, rect.y, rect.width, rect.height);
-			descriptors.add(new Descriptor(input.getStreamId(), input.getSequenceNr(), box, 0, new float[0]));
+			descriptors.add(new Descriptor(input.getRequestId(), input.getStreamId(), input.getSequenceNr(), box, 0, new float[0]));
 		}
 		
-		Feature feature = new Feature(input.getStreamId(), input.getSequenceNr(), name, 0, descriptors, null);
+		Feature feature = new Feature(input.getRequestId(), input.getStreamId(), input.getSequenceNr(), name, 0, descriptors, null);
 		if(outputFrame){
 			frame.getFeatures().add(feature);
 			result.add(frame);

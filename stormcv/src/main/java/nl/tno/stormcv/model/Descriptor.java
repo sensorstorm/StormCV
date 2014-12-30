@@ -21,8 +21,8 @@ public class Descriptor extends CVParticle {
 	private long duration;
 	private float[] values;
 	
-	public Descriptor(String streamId, long sequenceNr, Rectangle boundingBox, long duration, float[] values) {
-		super(streamId, sequenceNr);
+	public Descriptor(long requestId, String streamId, long sequenceNr, Rectangle boundingBox, long duration, float[] values) {
+		super(requestId, streamId, sequenceNr);
 		this.boundingBox = boundingBox;
 		this.values = values;
 		this.duration = duration;
@@ -51,6 +51,11 @@ public class Descriptor extends CVParticle {
 		return values;
 	}
 	
+	/**
+	 * Simply changes the location of this descriptor by moving it in the provided x,y direction
+	 * @param x
+	 * @param y
+	 */
 	public void translate(int x, int y){
 		this.boundingBox.x += x;
 		this.boundingBox.y += y;
@@ -61,7 +66,7 @@ public class Descriptor extends CVParticle {
 		for(int i=0;i<values.length; i++){
 			valuesCopy[i] = values[i];
 		}
-		Descriptor copy = new Descriptor(new String(this.getStreamId()), this.getSequenceNr(), new Rectangle(this.getBoundingBox()), this.getDuration(), valuesCopy);
+		Descriptor copy = new Descriptor(getRequestId(), new String(this.getStreamId()), this.getSequenceNr(), new Rectangle(this.getBoundingBox()), this.getDuration(), valuesCopy);
 		copy.setMetadata(this.getMetadata());
 		return copy;
 	}

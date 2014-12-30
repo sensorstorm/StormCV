@@ -129,7 +129,7 @@ public class RefreshingImageFetcher implements IFetcher<Frame> {
 				try{
 					BufferedImage image = ImageIO.read(url);
 					byte[] buffer = ImageUtils.imageToBytes(image, imageType);
-					Frame frame = new Frame(url.getFile().substring(1), sequenceNr, imageType, buffer, System.currentTimeMillis(), new Rectangle(image.getWidth(), image.getHeight()));
+					Frame frame = new Frame(Long.MIN_VALUE, url.getFile().substring(1), sequenceNr, imageType, buffer, System.currentTimeMillis(), new Rectangle(image.getWidth(), image.getHeight()));
 					frame.getMetadata().put("uri", url);
 					frameQueue.put(frame);
 					sequenceNr++;

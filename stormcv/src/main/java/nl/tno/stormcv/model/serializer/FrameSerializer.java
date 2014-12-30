@@ -83,7 +83,7 @@ public class FrameSerializer extends CVParticleSerializer<Frame> implements Seri
 
 	@Override
 	@SuppressWarnings("unchecked")
-	protected Frame readObject(Kryo kryo, Input input, Class<Frame> clas, String streamId, long sequenceNr) throws IOException{
+	protected Frame readObject(Kryo kryo, Input input, Class<Frame> clas, long requestId, String streamId, long sequenceNr) throws IOException{
 		long timeStamp = input.readLong();
 		String imageType = input.readString();
 		int buffSize = input.readInt();
@@ -96,7 +96,7 @@ public class FrameSerializer extends CVParticleSerializer<Frame> implements Seri
 				Math.round(input.readFloat()), Math.round(input.readFloat()));
 		List<Feature> features = kryo.readObject(input, ArrayList.class);
 		
-		return new Frame(streamId, sequenceNr, imageType, buffer, timeStamp, boundingBox, features);
+		return new Frame(requestId, streamId, sequenceNr, imageType, buffer, timeStamp, boundingBox, features);
 	}
 
 }

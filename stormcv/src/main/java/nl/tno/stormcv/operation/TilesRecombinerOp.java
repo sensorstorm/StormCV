@@ -103,7 +103,7 @@ public class TilesRecombinerOp implements IBatchOperation<CVParticle>{
 		
 		List<CVParticle> result = new ArrayList<CVParticle>();
 		if(outputFrame){
-			Frame newFrame = new Frame(input.get(0).getStreamId(), input.get(0).getSequenceNr(), 
+			Frame newFrame = new Frame(input.get(0).getRequestId(), input.get(0).getStreamId(), input.get(0).getSequenceNr(), 
 					imageType, newImage, ((Frame)input.get(0)).getTimestamp(), totalFrame);
 			newFrame.getFeatures().addAll(featureNameMap.values());
 			result.add(newFrame);
@@ -144,7 +144,7 @@ public class TilesRecombinerOp implements IBatchOperation<CVParticle>{
 			}else{
 				dense = null;
 			}
-			Feature combiFeature = new Feature(streamId, newF.getSequenceNr(), newF.getName(), newF.getDuration(), newF.getSparseDescriptors(), dense);
+			Feature combiFeature = new Feature(newF.getRequestId(), streamId, newF.getSequenceNr(), newF.getName(), newF.getDuration(), newF.getSparseDescriptors(), dense);
 			features.put(newF.getName(), combiFeature);
 		}else{
 			feature.getSparseDescriptors().addAll(newF.getSparseDescriptors());

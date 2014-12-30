@@ -39,7 +39,7 @@ public class GroupOfFramesSerializer extends CVParticleSerializer<GroupOfFrames>
 	}
 
 	@Override
-	protected GroupOfFrames readObject(Kryo kryo, Input input,	Class<GroupOfFrames> clas, String streamId, long sequenceNr) throws Exception {
+	protected GroupOfFrames readObject(Kryo kryo, Input input,	Class<GroupOfFrames> clas, long requestId, String streamId, long sequenceNr) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -71,7 +71,7 @@ public class FeatureSerializer extends CVParticleSerializer<Feature> implements 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Feature readObject(Kryo kryo, Input input, Class<Feature> clas, String streamId, long sequenceNr) throws Exception {
+	protected Feature readObject(Kryo kryo, Input input, Class<Feature> clas, long requestId, String streamId, long sequenceNr) throws Exception {
 		String name = input.readString();
 		long duration = input.readLong();
 		List<Descriptor> sparseDescriptors = kryo.readObject(input, ArrayList.class);
@@ -91,7 +91,7 @@ public class FeatureSerializer extends CVParticleSerializer<Feature> implements 
 				}
 			}
 		
-		Feature feature = new Feature(streamId, sequenceNr, name, duration, sparseDescriptors, denseDescriptor);
+		Feature feature = new Feature(requestId, streamId, sequenceNr, name, duration, sparseDescriptors, denseDescriptor);
 		return feature;
 	}
 
