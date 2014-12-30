@@ -1,4 +1,4 @@
-package nl.tno.stormcv.drpc;
+package nl.tno.stormcv.example.util;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import backtype.storm.task.TopologyContext;
+import nl.tno.stormcv.drpc.IRequestOp;
 import nl.tno.stormcv.model.Frame;
 import nl.tno.stormcv.model.serializer.CVParticleSerializer;
 import nl.tno.stormcv.model.serializer.FrameSerializer;

@@ -1,7 +1,8 @@
-package nl.tno.stormcv.drpc;
+package nl.tno.stormcv.example.util;
 
 import java.util.Map;
 
+import nl.tno.stormcv.drpc.IResultOp;
 import nl.tno.stormcv.model.CVParticle;
 import nl.tno.stormcv.model.Frame;
 import backtype.storm.task.TopologyContext;
