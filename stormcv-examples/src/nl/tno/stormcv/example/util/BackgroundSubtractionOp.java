@@ -29,7 +29,7 @@ import nl.tno.stormcv.util.ImageUtils;
 public class BackgroundSubtractionOp extends OpenCVOp<Frame> implements ISingleInputOperation<Frame>
 {
 	/**
-	 * 
+	 * enumerations
 	 */
 	public enum BSAlgorithm { MOG, MOG2	}
 	
@@ -59,7 +59,8 @@ public class BackgroundSubtractionOp extends OpenCVOp<Frame> implements ISingleI
 	/**
 	 * @param algorithm the algorithm to set
 	 */
-	public BackgroundSubtractionOp setAlgorithm(BSAlgorithm algorithm) {
+	public BackgroundSubtractionOp setAlgorithm(BSAlgorithm algorithm) 
+	{
 		this.algorithm = algorithm;
 		return this;
 	}
