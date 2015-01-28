@@ -58,7 +58,7 @@ public class BackgroundSubtractionOp extends OpenCVOp<Frame> implements ISingleI
 	}
 
 	/**
-	 * @param algorithm the algorithm to set
+	 * @param the algorithm to set
 	 */
 	public BackgroundSubtractionOp setAlgorithm(BSAlgorithm algorithm) 
 	{
@@ -109,7 +109,7 @@ public class BackgroundSubtractionOp extends OpenCVOp<Frame> implements ISingleI
 		input_frame  = (Frame) input;
 		output_frame = input_frame;
 			
-		// check if input has an image
+		// check if input frame has an image
 		if( input_frame.getImageType().equals(Frame.NO_IMAGE) ) 
 			return result;
 
@@ -126,8 +126,9 @@ public class BackgroundSubtractionOp extends OpenCVOp<Frame> implements ISingleI
 	    else
 	    	output_image = fgMaskMOG2;
 	    
-	    byte[] outputBytes = ImageUtils.Mat2ImageBytes(output_image, input_frame.getImageType());
-        output_frame.setImage(outputBytes, input_frame.getImageType());
+	    // convert output image to byte array and set image in output frame
+	    byte[] outputBytes = ImageUtils.Mat2ImageBytes( output_image, input_frame.getImageType() );
+        output_frame.setImage( outputBytes, input_frame.getImageType() );
 		result.add( output_frame );
 		
 		return result;
