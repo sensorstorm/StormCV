@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tno</groupId>
 	<artifactId>stormcv</artifactId>
-	<version>0.7.0</version>
+	<version>0.7.1</version>
 	<name>StormCV</name>
 	<description>A Storm contribution to ease the development of computer vision topologies</description>
 	<url>https://github.com/sensorstorm/StormCV</url>

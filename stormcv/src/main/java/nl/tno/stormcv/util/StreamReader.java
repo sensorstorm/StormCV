@@ -100,6 +100,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 					}
 					logger.info("Start reading File: "+streamLocation);
 					mediaReader = ToolFactory.makeReader(streamLocation);
+					System.err.println(mediaReader.getContainer().getContainerFormat().getOutputExtensions());
 				}else{
 					logger.error("No video list or url provided, nothing to read");
 					break;

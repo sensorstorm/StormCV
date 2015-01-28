@@ -2,6 +2,7 @@ package nl.tno.stormcv.util;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +17,8 @@ import nl.tno.stormcv.util.connector.FileConnector;
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IContainerFormat;
+import com.xuggle.xuggler.io.XugglerIO;
 
 /**
  * Utility class used to write frames to a video file and used by the StreamWriterOperation to store streams. 
@@ -43,6 +46,7 @@ public class StreamWriter {
 	private int fileCount;
 	private long nrFramesVideo;
 	private File tmpDir;
+	private ByteArrayOutputStream output;
 	
 	/**
 	 * Creates a StreamWriter which will write provided frames to the location using the provided
@@ -66,42 +70,88 @@ public class StreamWriter {
 	}
 	
 	/**
+	 * Creates a StreamWriter which produces bytes as result to addFrames
+	 * @param codec
+	 * @param speed
+	 * @param nrFramesVideo
+	 * @throws IOException
+	 */
+	public StreamWriter(ICodec.ID codec, float speed, long nrFramesVideo) throws IOException{
+		this.codec = codec;
+		this.speed = speed;
+		this.nrFramesVideo = nrFramesVideo;
+	}
+	
+	/**
+	 * Creates a mediawriter that will write to a ByteArrayOutputStream instead of a file
+	 * This stream will be formatted as mp4.
+	 * @throws IOException
+	 */
+	private void makeBytesWriter() throws IOException{
+		if(output != null) output.close();
+		output = new ByteArrayOutputStream();
+		writer = ToolFactory.makeWriter(XugglerIO.map(output));
+		IContainerFormat containerFormat = IContainerFormat.make();
+		containerFormat.setOutputFormat("flv", null, null);
+		writer.getContainer().setFormat(containerFormat);
+	}
+	
+	/**
 	 * Adds the set of frames to the file created by this StreamWriter. The characteristics of the stream
 	 * (WxH and frame rate) are inferred automatically from the first set of frames provided which must be 
 	 * at least two subsequent frames. 
 	 * @param frames the set of frames to be added to the file
 	 * @throws IOException 
 	 */
-	public void addFrames(List<Frame> frames) throws IOException{
+	public byte[] addFrames(List<Frame> frames) throws IOException{
 		if(writer == null){
 			tbf = (long)Math.ceil( (frames.get(frames.size()-1).getTimestamp() - frames.get(0).getTimestamp())/(frames.size()-1));
 			tbf = (long)(tbf / speed);
 			int width = frames.get(0).getImage().getWidth();
 			int height = frames.get(0).getImage().getHeight();
-			currentFile = new File(tmpDir, frames.get(0).getStreamId()+"_"+fileCount+".mp4");
-			logger.info("Writing TMP video to: "+currentFile);
-			writer = ToolFactory.makeWriter(currentFile.getAbsolutePath());
+			if(location != null){
+				currentFile = new File(tmpDir, frames.get(0).getStreamId()+"_"+fileCount+".mp4");
+				logger.info("Writing TMP video to: "+currentFile);
+				writer = ToolFactory.makeWriter(currentFile.getAbsolutePath());
+			}else{
+				makeBytesWriter();
+			}
 			writer.addVideoStream(0, 0, codec, width, height);
 			nextFrameTime = 0;
 		}
 		
 		for(Frame frame : frames){
 			BufferedImage image = frame.getImage();
-			// Xuggler requires 3byte rgb encoded images so check and convert if needed
-			if(image.getType() != BufferedImage.TYPE_3BYTE_BGR){
-				BufferedImage imageBGR = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-				new ColorConvertOp(null).filter(image, imageBGR);
-				image = imageBGR;
-			}
-			writer.encodeVideo(0, image, nextFrameTime, TimeUnit.MILLISECONDS);
-			nextFrameTime += tbf;
-			frameCount++;
+			addFrameToVideo(image);
 		}
 		if(frameCount >= nrFramesVideo){
+			// when writing to memory the last two frames are missing so we add them twice as a (ugly) work around
+			// TODO: figure out where this behavior comes from and fix it!
+			if(this.output != null){
+				addFrameToVideo(frames.get(frames.size()-2).getImage());
+				addFrameToVideo(frames.get(frames.size()-1).getImage());
+			}
 			this.close();
+			if(this.output != null) {
+				output.flush();
+				return output.toByteArray();
+			}
 		}
+		return null;
 	}
 
+	private void addFrameToVideo(BufferedImage image){
+		// Xuggler requires 3byte rgb encoded images so check and convert if needed
+		if(image.getType() != BufferedImage.TYPE_3BYTE_BGR){
+			BufferedImage imageBGR = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+			new ColorConvertOp(null).filter(image, imageBGR);
+			image = imageBGR;
+		}
+		writer.encodeVideo(0, image, nextFrameTime, TimeUnit.MILLISECONDS);
+		nextFrameTime += tbf;
+		frameCount++;
+	}
+	
 	/**
 	 * Closes the video file and makes it playable. This method must be called by the owner or
 	 * the file will never be closed and probably not playable
@@ -110,8 +160,9 @@ public class StreamWriter {
 		if(writer != null ) {
 			frameCount = 0;
 			fileCount++;
+			writer.flush();
 			writer.close();
-			try {
+			if(location != null) try {
 				connector.moveTo(location+currentFile.getName());
 				logger.info("Moving video to final location: "+location+currentFile.getName());
 				connector.copyFile(currentFile, true);

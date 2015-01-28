@@ -80,6 +80,7 @@ public class StormCVConfig extends Config{
 		put(STORMCV_FRAME_ENCODING, Frame.JPG_IMAGE); // sets the encoding of frames which determines both serialization speed and tuple size
 		
 		// register the basic set Kryo serializers
+		registerSerialization(VideoChunk.class, VideoChunkSerializer.class);
 		registerSerialization(GroupOfFrames.class, GroupOfFramesSerializer.class);
 		registerSerialization(Frame.class, FrameSerializer.class);
 		registerSerialization(Descriptor.class, DescriptorSerializer.class);
