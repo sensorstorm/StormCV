@@ -2,7 +2,8 @@ package nl.tno.stormcv.operation;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,6 @@ import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
-import com.xuggle.xuggler.IContainer;
-import com.xuggle.xuggler.IContainerFormat;
 
 import backtype.storm.task.TopologyContext;
 import nl.tno.stormcv.StormCVConfig;
@@ -53,11 +52,10 @@ public class VideoToFramesOp extends MediaListenerAdapter implements ISingleInpu
 	 * Instantiate a VideoToFrames operation by specifying the frameskip used to create the video (needed to calculate the correct
 	 * frameNumbers for the frames in the video. By default the frames in the video will be emitted to the next bolt individually.
 	 * This behavior can be changed using the groupFrames setting.  
-	 * @param frameSkip
+	 * @param frameSkip the frameskip used to create the video
 	 */
-	public VideoToFramesOp(int frameSkip, boolean groupOfFrames){
+	public VideoToFramesOp(int frameSkip){
 		this.frameSkip = frameSkip;
-		this.groupOfFrames = groupOfFrames;
 	}
 	
 	/**
@@ -98,27 +96,24 @@ public class VideoToFramesOp extends MediaListenerAdapter implements ISingleInpu
 		seqNum = video.getSequenceNr();
 		streamId = video.getStreamId();
 		
-		IContainerFormat format = IContainerFormat.make();
-		format.setInputFormat("flv");
-		
-		IContainer container = IContainer.make();
-		ByteArrayInputStream bais = new ByteArrayInputStream(video.getVideo());
-
-		container.setInputBufferLength(bais.available());
-		container.open(bais, format, false, false);
-		IMediaReader reader = ToolFactory.makeReader(container);
+		File tmpVideo = File.createTempFile("videochunk_", "."+video.getContainer());
+		FileOutputStream fos = new FileOutputStream(tmpVideo);
+		fos.write(video.getVideo());
+		fos.flush();
+		fos.close();
+		IMediaReader reader = ToolFactory.makeReader(tmpVideo.getAbsolutePath());
 		
 		reader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
 		reader.addListener(this);
 		while (reader.readPacket() == null);
 		reader.close();
+		if(!tmpVideo.delete()) tmpVideo.deleteOnExit();
 		
 		if(groupOfFrames){
 			result.add(new GroupOfFrames(video.getStreamId(), video.getSequenceNr(), frames));
 		}else{
 			for(Frame frame : frames) result.add(frame);
 		}
-		System.err.println(result.size());
 		return result;
 	}
 	

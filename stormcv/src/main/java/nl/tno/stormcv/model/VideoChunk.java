@@ -1,11 +1,5 @@
 package nl.tno.stormcv.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-
 import nl.tno.stormcv.operation.FramesToVideoOp;
 import nl.tno.stormcv.operation.VideoToFramesOp;
 import backtype.storm.tuple.Tuple;
@@ -22,28 +16,20 @@ public class VideoChunk extends CVParticle {
 
 	private long numberOfFrames;
 	private byte[] video;
+	private String container;
 
-	public VideoChunk(String streamId, long sequenceNr, long duration, byte[] videoBytes) {
+	public VideoChunk(String streamId, long sequenceNr, long nrOfFrames, byte[] videoBytes, String container) {
 		super(streamId, sequenceNr);
-		this.numberOfFrames = duration;
+		this.numberOfFrames = nrOfFrames;
 		this.video = videoBytes;
+		this.container = container;
 	}
 	
-	@SuppressWarnings("resource")
-	public VideoChunk(String streamId, long sequenceNr, long duration, File videoFile) throws IOException {
-		super(streamId, sequenceNr);
-		this.numberOfFrames = duration;
-		FileChannel channel = new FileInputStream(videoFile).getChannel();
-		MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-		channel.close();
-		this.video = buffer.array();
-	}
-
-
-	public VideoChunk(Tuple tuple, long duration, byte[] videoBlob){
+	public VideoChunk(Tuple tuple, long duration, byte[] videoBlob, String container){
 		super(tuple);
 		this.numberOfFrames = duration;
 		this.video = videoBlob;
+		this.container = container;
 	}
 	
 	public long getDuration() {
@@ -53,4 +39,9 @@ public class VideoChunk extends CVParticle {
 	public byte[] getVideo() {
 		return video;
 	}
+
+	public String getContainer() {
+		return container;
+	}
+	
 }

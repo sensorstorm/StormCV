@@ -27,7 +27,7 @@ import nl.tno.stormcv.util.connector.FileConnector;
  * This operation has two modes; writes {@link Frame}'s to a set of video files with name 'streamId_index.mp4' using h264 encoding. The index starts at 0 and is increased with 1 for
  * <ul>
  * <li>output {@link VideoChunk} objects: the video's generated will be send to the next bolt in the topology. Video will be encoded using the specified codec and put in
- * a flv container. Video objects can be converted back into either {@link Frame} or {@link GroupOfFrames} using the {@link VideoToFramesOp}. This used less bandwidth than sending
+ * a wmv container. Video objects can be converted back into either {@link Frame} or {@link GroupOfFrames} using the {@link VideoToFramesOp}. This used less bandwidth than sending
  * the frames individually (raw). The actual bytesize of video chunks can be minimized by setting a high speed (also depends on framerate)</li>
  * <li>write video files to the specified (remote) location and sent the original Frames it gets to the next bolt in the topology. 
  * Each file has an index value, starting at 0, which is incremented for each file written. </li>
@@ -38,7 +38,7 @@ import nl.tno.stormcv.util.connector.FileConnector;
  * Example: a stream is read by a spout and 1 frame every second is emitted into the topology. A StreamWriterOp configured to put 60 frames in a 
  * file and a speed factor of 2.0 will create video's of 30 seconds long (running at twice the normal speed).
  * 
- * <i>Writing to a video object was only tested using h264 encoding in flv container. Other codecs might have different behaviour (missing frames etc!)</i>
+ * It is possible to specify additional parameters like bitrate and ffmpeg parameters to tune the speed and quality.
  * 
  * @author Corne Versloot
  *
@@ -47,11 +47,14 @@ public class FramesToVideoOp implements IBatchOperation<CVParticle> {
 
 	private static final long serialVersionUID = 5155420608757446666L;
 	private String location;
+	private String container;
 	private ConcurrentHashMap<String, StreamWriter> writers;
 	private float speed = 1;
 	private ConnectorHolder connectorHolder;
 	private long framesPerVideo;
-	private int frameCount;
+	private int bitrate = -1;
+	private String[] ffmpegParams;
+	private ICodec.ID codec = ICodec.ID.CODEC_ID_H264;
 	
 	/**
 	 * Constructs a writer that will put files in the provided location (must be a directory!). Each video
@@ -62,16 +65,21 @@ public class FramesToVideoOp implements IBatchOperation<CVParticle> {
 	public FramesToVideoOp(String location, long framesPerVideo){
 		this.location = location;
 		this.framesPerVideo = framesPerVideo;
+		this.container = "mp4";
 	}
 	
 	/**
 	 * Constructs a writer that will generate {@link VideoChunk} objects from frames it receives. Each video
-	 * will contain at last framesPerFile number of frames.
+	 * will contain at last framesPerFile number of frames. By default the WMV2 codec within a wmv container is used
+	 * because this combination avoids framelos due to Xuggler/ffmpeg holding frames in buffers.  
+	 *   
 	 * @param framesPerFile minimum number of frames put in a single file
 	 */
 	public FramesToVideoOp(long framesPerFile){
 		this.location = null;
 		this.framesPerVideo = framesPerFile;
+		this.container = "wmv";
+		this.codec = ICodec.ID.CODEC_ID_WMV2;
 	}
 
 	/**
@@ -82,6 +90,47 @@ public class FramesToVideoOp implements IBatchOperation<CVParticle> {
 	 */
 	public FramesToVideoOp speed(float speed){
 		this.speed = speed;
+		return this;
+	}
+	
+	/**
+	 * Specifies the container used. Default is mp4
+	 * @param ext
+	 * @return
+	 */
+	public FramesToVideoOp container(String ext){
+		this.container = ext;
+		return this;
+	}
+	
+	/**
+	 * Sets the bitrate to be used (number of bytes per second)
+	 * @param value
+	 * @return itself
+	 */
+	public FramesToVideoOp bitrate(int value){
+		this.bitrate = value;
+		return this;
+	}
+	
+	/**
+	 * Sets the code to be used
+	 * @param codec
+	 * @return
+	 */
+	public FramesToVideoOp codec (ICodec.ID codec){
+		this.codec = codec;
+		return this;
+	}
+	
+	/**
+	 * Specify any ffmpeg flags and their values as a single list. The leading dash typically typed
+	 * before a flag should be omitted. Example params: "threads", "2", "tune", "zerolatency". 
+	 * @param params
+	 * @return itself
+	 */
+	public FramesToVideoOp ffmpegParams(String... params){
+		this.ffmpegParams = params;
 		return this;
 	}
 	
@@ -119,24 +168,21 @@ public class FramesToVideoOp implements IBatchOperation<CVParticle> {
 				if(fl != null){
 					fl = fl.deepCopy();
 					fl.moveTo(location);
-					writers.put(streamId, new StreamWriter(location, fl, ICodec.ID.CODEC_ID_H264, speed, framesPerVideo));
+					writers.put(streamId, new StreamWriter(location, container, fl, this.codec , speed, framesPerVideo, bitrate, ffmpegParams));
 				}
 			}else{
-				writers.put(streamId, new StreamWriter(ICodec.ID.CODEC_ID_H264, speed, framesPerVideo));
+				writers.put(streamId, new StreamWriter(this.codec, speed, framesPerVideo, container, bitrate, ffmpegParams));
 			}
 		}
 		
 		List<Frame> frames = new ArrayList<Frame>(input.size());
 		for(CVParticle particle : input) frames.add((Frame)particle);
-		frameCount += frames.size();
 		
 		if(location == null){
 			byte[] bytes = writers.get(streamId).addFrames(frames);
 			if(bytes != null){
-				VideoChunk video = new VideoChunk(streamId, input.get(0).getSequenceNr(), framesPerVideo, bytes);
+				VideoChunk video = new VideoChunk(streamId, input.get(0).getSequenceNr(), framesPerVideo, bytes, container);
 				result.add(video);
-				System.err.println("Sending video: "+video.getVideo().length+", frames: "+frameCount);
-				frameCount = 0;
 			}
 			return result;
 		}else{

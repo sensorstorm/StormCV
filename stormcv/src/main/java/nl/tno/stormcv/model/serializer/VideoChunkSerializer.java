@@ -22,24 +22,27 @@ public class VideoChunkSerializer extends CVParticleSerializer<VideoChunk> imple
 
 	public static final String VIDEO = "video";
 	public static final String TIMESTAMP = "timeStamp";
+	public static final String CONTAINER = "container";
 	
 	@Override
 	protected List<String> getTypeFields() {
 		List<String> fields = new ArrayList<String>();
 		fields.add(TIMESTAMP);
 		fields.add(VIDEO);
+		fields.add(CONTAINER);
 		return fields;
 	}
 	
 	@Override
 	protected Values getValues(CVParticle object) throws IOException {
 		VideoChunk video = (VideoChunk)object;
-		return new Values(video.getDuration(), video.getVideo());
+		return new Values(video.getDuration(), video.getVideo(), video.getContainer());
 	}
 	
 	@Override
 	protected VideoChunk createObject(Tuple tuple) throws IOException {
-		return new VideoChunk(tuple, tuple.getLongByField(TIMESTAMP), tuple.getBinaryByField(VIDEO));
+		return new VideoChunk(tuple, tuple.getLongByField(TIMESTAMP), 
+				tuple.getBinaryByField(VIDEO), tuple.getStringByField(CONTAINER));
 	}
 	
 	@Override
@@ -47,6 +50,7 @@ public class VideoChunkSerializer extends CVParticleSerializer<VideoChunk> imple
 		output.writeLong(video.getDuration());
 		output.writeInt(video.getVideo().length);
 		output.writeBytes(video.getVideo());
+		output.writeString(video.getContainer());
 	}
 
 	@Override
@@ -54,7 +58,8 @@ public class VideoChunkSerializer extends CVParticleSerializer<VideoChunk> imple
 		long duration = input.readLong();
 		int length = input.readInt();
 		byte[] video = input.readBytes(length);
-		return new VideoChunk(streamId, sequenceNr, duration, video);
+		String container = input.readString();
+		return new VideoChunk(streamId, sequenceNr, duration, video, container);
 		
 	}
 

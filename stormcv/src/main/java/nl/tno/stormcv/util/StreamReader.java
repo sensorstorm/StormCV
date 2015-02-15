@@ -17,6 +17,8 @@ import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.MediaListenerAdapter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.mediatool.event.IVideoPictureEvent;
+import com.xuggle.xuggler.ICodec;
+import com.xuggle.xuggler.IContainer;
 
 /**
  * This class reads a video stream or file, decodes frames and puts those in a queue for further processing. 
@@ -42,6 +44,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 	private int sleepTime;
 	private boolean useSingleID = false;
 	private String tmpDir;
+	private int frameMs = -1;
 
 	private String streamLocation;
 	private LinkedBlockingQueue<String> videoList = null;
@@ -85,7 +88,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 		running = true;
 		while(running){
 			try{
-				// if a weblocation was provided read it
+				// if a url was provided read it
 				if(videoList == null && streamLocation != null){
 					logger.info("Start reading stream: "+streamLocation);
 					mediaReader = ToolFactory.makeReader(streamLocation);
@@ -99,8 +102,20 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 						if(streamLocation.contains("/")) streamId = streamLocation.substring(streamLocation.lastIndexOf('/')+1)+"_"+streamId;
 					}
 					logger.info("Start reading File: "+streamLocation);
+					
+					// read framerate from file
+			        IContainer cont = IContainer.make();
+			        if (cont.open(streamLocation, IContainer.Type.READ, null) > 0) try{
+				        for(int s=0; s < cont.getNumStreams(); s++){// find the videostream
+				        	if(cont.getStream(s).getStreamCoder().getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO){
+				        		frameMs = (int)Math.floor(1000f/cont.getStream(s).getStreamCoder().getFrameRate().getDouble());
+				        	}
+				        }
+			        }catch(Exception e){
+			        	logger.warn("Unable to read metadata from video");
+			        }
+			        
 					mediaReader = ToolFactory.makeReader(streamLocation);
-					System.err.println(mediaReader.getContainer().getContainerFormat().getOutputExtensions());
 				}else{
 					logger.error("No video list or url provided, nothing to read");
 					break;
@@ -111,6 +126,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
 				if(!useSingleID) frameNr = 0;
 		        mediaReader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
 		        mediaReader.addListener(this);
+		        
 		        while (mediaReader.readPacket() == null && running ) ;
 		 
 		        // reset internal state
@@ -143,11 +159,12 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
                 mVideoStreamIndex = event.getStreamIndex();
             }else return;
         }
-
         if(frameNr % frameSkip < groupSize) try{
         	BufferedImage frame = event.getImage();
         	byte[] buffer = ImageUtils.imageToBytes(frame, imageType);
-        	Frame newFrame = new Frame(streamId, frameNr, imageType, buffer, event.getTimeStamp(TimeUnit.MILLISECONDS), new Rectangle(0, 0,frame.getWidth(), frame.getHeight()));
+        	long timestamp = event.getTimeStamp(TimeUnit.MILLISECONDS);
+        	if(frameMs > 0 ) timestamp = frameNr * frameMs;
+        	Frame newFrame = new Frame(streamId, frameNr, imageType, buffer, timestamp, new Rectangle(0, 0,frame.getWidth(), frame.getHeight()));
         	newFrame.getMetadata().put("uri", streamLocation);
         	frameQueue.put(newFrame);
         	// enforced throttling

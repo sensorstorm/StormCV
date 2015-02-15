@@ -76,10 +76,6 @@ public class Frame extends CVParticle {
 		this.boundingBox = box;
 	}
 
-	public long getTimeStamp() {
-		return timeStamp;
-	}
-
 	public Rectangle getBoundingBox() {
 		return boundingBox;
 	}
