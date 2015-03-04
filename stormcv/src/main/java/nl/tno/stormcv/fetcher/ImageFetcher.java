@@ -73,21 +73,23 @@ public class ImageFetcher implements IFetcher<Frame> {
 		}
 		
 		int nrTasks = context.getComponentTasks(context.getThisComponentId()).size();
-		int taskIndex = context.getThisTaskIndex();
 		
-		List<String> dirs = new ArrayList<String>(locations.size());
-		dirs.addAll(locations);
-
-		if(locations == null) locations = new ArrayList<String>();
-		for(String dir : dirs){
+		List<String> original = new ArrayList<String>();
+		original.addAll(locations);
+		locations.clear();
+		for(String dir : original){
 			locations.addAll(expand(dir));
 		}
+		
 		// change the list based on the number of tasks working on it
-		if (this.locations != null && this.locations.size() > 0) {
-			int batchSize = (int) Math.floor(locations.size() / nrTasks) + 1;
-			int start = batchSize * taskIndex;
-			locations = locations.subList(start, Math.min(start + batchSize, locations.size()));
+		List<String> filesToFetch = new ArrayList<String>();
+		int i = context.getThisTaskIndex();
+		while(i < locations.size()){
+			filesToFetch.add(locations.get(i));
+			i += nrTasks;
 		}
+		this.locations = filesToFetch;
+		
 	}
 
 	@Override
