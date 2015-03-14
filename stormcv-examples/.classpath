@@ -55,9 +55,9 @@
 	<classpathentry kind="lib" path="lib/zookeeper-3.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/xuggle-xuggler-5.4.jar"/>
 	<classpathentry kind="lib" path="lib/aws-java-sdk-1.4.7.jar"/>
-	<classpathentry kind="lib" path="lib/stormcv-0.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/jersey-bundle-1.18.jar"/>
 	<classpathentry kind="lib" path="lib/commons-net-3.3.jar"/>
 	<classpathentry kind="lib" path="lib/storm-core-0.9.2-incubating.jar"/>
+	<classpathentry kind="lib" path="lib/stormcv-0.7.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
