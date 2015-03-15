@@ -112,10 +112,10 @@ public class FeatureExtractionOp extends OpenCVOp<CVParticle> implements ISingle
 					descriptors.get(r, c, tmp);
 					values[c] = tmp[0];
 				}
-				descrList.add(new Descriptor(frame.getRequestId(), frame.getStreamId(), frame.getSequenceNr(), new Rectangle((int)keypoints.get(r).pt.x, (int)keypoints.get(r).pt.y, 0, 0), 0, values));
+				descrList.add(new Descriptor(frame.getStreamId(), frame.getSequenceNr(), new Rectangle((int)keypoints.get(r).pt.x, (int)keypoints.get(r).pt.y, 0, 0), 0, values));
 			}
 			
-			Feature feature = new Feature(frame.getRequestId(), frame.getStreamId(), frame.getSequenceNr(), featureName, 0, descrList, null);
+			Feature feature = new Feature(frame.getStreamId(), frame.getSequenceNr(), featureName, 0, descrList, null);
 			if(outputFrame){
 				frame.getFeatures().add(feature);
 				result.add(frame);

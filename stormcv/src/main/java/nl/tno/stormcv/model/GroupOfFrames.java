@@ -15,8 +15,8 @@ public class GroupOfFrames extends CVParticle{
 
 	private List<Frame> frames;
 	
-	public GroupOfFrames(long requestId, String streamId, long sequenceNr, List<Frame> frames) {
-		super(requestId, streamId, sequenceNr);
+	public GroupOfFrames(String streamId, long sequenceNr, List<Frame> frames) {
+		super(streamId, sequenceNr);
 		this.frames = frames;
 	}
 	

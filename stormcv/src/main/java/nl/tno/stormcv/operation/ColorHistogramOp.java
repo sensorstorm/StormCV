@@ -95,13 +95,13 @@ public class ColorHistogramOp extends OpenCVOp<Feature> implements ISingleInputO
                 hist.get(r, c, tmp);
                 values[r] = tmp[0];
             }
-            hist_descriptors.add(new Descriptor(input.getRequestId(), input.getStreamId(), input.getSequenceNr(), box, 0, values));
+            hist_descriptors.add(new Descriptor(input.getStreamId(), input.getSequenceNr(), box, 0, values));
         }
 		
 				
 		// add features to result
 		if ( hist_descriptors.size() > 0 )
-			result.add( new Feature( input.getRequestId(), input.getStreamId(), input.getSequenceNr(), name, 0, hist_descriptors, null ) );
+			result.add( new Feature( input.getStreamId(), input.getSequenceNr(), name, 0, hist_descriptors, null ) );
 		
 		return result;
 	}

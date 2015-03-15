@@ -68,7 +68,9 @@ public class DescriptorSerializer extends CVParticleSerializer<Descriptor> imple
 		for(int i=0; i<length; i++){
 			values[i] = input.readFloat();
 		}
-		return new Descriptor(requestId, streamId, sequenceNr, rectangle, duration, values);
+		Descriptor result =  new Descriptor(streamId, sequenceNr, rectangle, duration, values);
+		result.setRequestId(requestId);
+		return result;
 	}
 
 }

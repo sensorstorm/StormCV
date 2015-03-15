@@ -150,7 +150,7 @@ public class StreamFrameFetcher implements IFetcher<CVParticle>{
 				if(frameGroup == null || frameGroup.size() >= batchSize) frameGroup = new ArrayList<Frame>();
 				frameGroup.add(frame);
 				if(frameGroup.size() == batchSize){
-					return new GroupOfFrames(Long.MIN_VALUE, frameGroup.get(0).getStreamId(), frameGroup.get(0).getSequenceNr(), frameGroup);
+					return new GroupOfFrames(frameGroup.get(0).getStreamId(), frameGroup.get(0).getSequenceNr(), frameGroup);
 				}
 			}
 		}

@@ -53,7 +53,7 @@ public class OpticalFlowVisualizeOp implements ISingleInputOperation<Frame>{
 				image.setRGB(x, y, new Color(v, v, v).getRGB());
 			}
 		}
-		result.add(new Frame(of.getRequestId(), of.getStreamId(), of.getSequenceNr(), Frame.JPG_IMAGE, image, 0, new Rectangle(0,0,image.getWidth(), image.getHeight())));
+		result.add(new Frame(of.getStreamId(), of.getSequenceNr(), Frame.JPG_IMAGE, image, 0, new Rectangle(0,0,image.getWidth(), image.getHeight())));
 		return result;
 	}
 

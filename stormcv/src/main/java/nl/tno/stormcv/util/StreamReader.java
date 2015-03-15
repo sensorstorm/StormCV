@@ -146,7 +146,7 @@ public class StreamReader extends MediaListenerAdapter implements Runnable {
         if(frameNr % frameSkip < groupSize) try{
         	BufferedImage frame = event.getImage();
         	byte[] buffer = ImageUtils.imageToBytes(frame, imageType);
-        	Frame newFrame = new Frame(Long.MIN_VALUE, streamId, frameNr, imageType, buffer, event.getTimeStamp(TimeUnit.MILLISECONDS), new Rectangle(0, 0,frame.getWidth(), frame.getHeight()));
+        	Frame newFrame = new Frame(streamId, frameNr, imageType, buffer, event.getTimeStamp(TimeUnit.MILLISECONDS), new Rectangle(0, 0,frame.getWidth(), frame.getHeight()));
         	newFrame.getMetadata().put("uri", streamLocation);
         	frameQueue.put(newFrame);
         	// enforced throttling

@@ -45,7 +45,7 @@ public class FrameGrouperOp implements IBatchOperation<GroupOfFrames> {
 			}
 		}
 		List<GroupOfFrames> result = new ArrayList<GroupOfFrames>();
-		if(frames.size() > 0) result.add( new GroupOfFrames(frames.get(0).getRequestId(), frames.get(0).getStreamId(), frames.get(0).getSequenceNr(), frames) );
+		if(frames.size() > 0) result.add( new GroupOfFrames(frames.get(0).getStreamId(), frames.get(0).getSequenceNr(), frames) );
 		return result;
 	}
 

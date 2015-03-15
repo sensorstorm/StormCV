@@ -96,7 +96,9 @@ public class FrameSerializer extends CVParticleSerializer<Frame> implements Seri
 				Math.round(input.readFloat()), Math.round(input.readFloat()));
 		List<Feature> features = kryo.readObject(input, ArrayList.class);
 		
-		return new Frame(requestId, streamId, sequenceNr, imageType, buffer, timeStamp, boundingBox, features);
+		Frame frame = new Frame(streamId, sequenceNr, imageType, buffer, timeStamp, boundingBox, features);
+		frame.setRequestId(requestId);
+		return frame;
 	}
 
 }

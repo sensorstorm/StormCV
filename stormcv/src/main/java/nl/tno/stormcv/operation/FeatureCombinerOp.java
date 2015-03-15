@@ -51,7 +51,7 @@ public class FeatureCombinerOp implements IBatchOperation<Frame> {
 				frame = (Frame) particle;
 			}
 		}
-		if(frame == null) frame = new Frame(input.get(0).getRequestId(), input.get(0).getStreamId(), input.get(0).getSequenceNr(), Frame.NO_IMAGE, (byte[])null, 0L, new Rectangle());
+		if(frame == null) frame = new Frame(input.get(0).getStreamId(), input.get(0).getSequenceNr(), Frame.NO_IMAGE, (byte[])null, 0L, new Rectangle());
 		
 		// merge new features with already existing features in the Frame
 		f1 : for(Feature newF : features){

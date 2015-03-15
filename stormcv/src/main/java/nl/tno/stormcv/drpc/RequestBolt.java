@@ -40,8 +40,10 @@ public class RequestBolt extends BaseRichBolt{
 	@Override
 	public void execute(Tuple tuple) {
 		try{
-			List<? extends CVParticle> result = operation.execute(tuple.getLong(0), tuple.getString(1));
+			long requestId = tuple.getLong(0);
+			List<? extends CVParticle> result = operation.execute(requestId, tuple.getString(1));
 			for(CVParticle particle : result){
+				particle.setRequestId(requestId);
 				collector.emit(tuple, operation.getSerializer().toTuple(particle));
 			}
 			collector.ack(tuple);

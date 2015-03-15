@@ -28,8 +28,8 @@ public class Feature extends CVParticle{
 	private List<Descriptor> sparseDescriptors = new ArrayList<Descriptor>();
 	private float[][][] denseDescriptors = new float[0][0][0];
 	
-	public Feature(long requestId, String streamId, long sequenceNr, String name, long duration, List<Descriptor> sparseDescriptors, float[][][] denseDescriptors) {
-		super(requestId, streamId, sequenceNr);
+	public Feature(String streamId, long sequenceNr, String name, long duration, List<Descriptor> sparseDescriptors, float[][][] denseDescriptors) {
+		super(streamId, sequenceNr);
 		this.name = name;
 		this.duration = duration;
 		if(sparseDescriptors != null){
@@ -82,8 +82,9 @@ public class Feature extends CVParticle{
 			sparseCopy.add(d.deepCopy());
 		}
 		
-		Feature copyFeature = new Feature(this.getRequestId(), new String(this.getStreamId()), this.getSequenceNr(), new String(this.getName()), this.getDuration(), 
+		Feature copyFeature = new Feature(new String(this.getStreamId()), this.getSequenceNr(), new String(this.getName()), this.getDuration(), 
 				sparseCopy, denseCopy);
+		copyFeature.setRequestId(getRequestId());
 		copyFeature.setMetadata(this.getMetadata());
 		return copyFeature;
 	}

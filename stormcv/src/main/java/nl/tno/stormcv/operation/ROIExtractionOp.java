@@ -141,7 +141,7 @@ public class ROIExtractionOp implements ISingleInputOperation<Frame> {
 					roiImage = frame.getImage().getSubimage(roi.x, roi.y, roi.width, roi.height);
 				}
 				byte[] buffer = ImageUtils.imageToBytes(roiImage, imageType);
-				Frame roiFrame = new Frame(frame.getRequestId(), frame.getStreamId()+"_"+result.size(), frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), roi);
+				Frame roiFrame = new Frame(frame.getStreamId()+"_"+result.size(), frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), roi);
 				roiFrame.getFeatures().addAll(copyFeaturesInROI(roi, frame.getFeatures()));
 				result.add(roiFrame);
 			}

@@ -36,12 +36,11 @@ public class E2_FacedetectionTopology {
 		conf.put(StormCVConfig.STORMCV_SPOUT_FAULTTOLERANT, false); // indicates if the spout must be fault tolerant; i.e. spouts do NOT! replay tuples on fail
 		conf.put(StormCVConfig.STORMCV_CACHES_TIMEOUT_SEC, 30); // TTL (seconds) for all elements in all caches throughout the topology (avoids memory overload)
 
-		
 		String userDir = System.getProperty("user.dir").replaceAll("\\\\", "/");
 		
 		// create a list with files to be processed, in this case just one. Multiple files will be spread over the available spouts
 		List<String> files = new ArrayList<String>();
-		files.add( "file://"+ userDir +"/resources/data/" ); // adding a directory will process all files within the directory (also subidrs)
+		files.add( "file://"+ userDir +"/resources/data/" ); // actual use of this directory depends on the fetcher. The ImageFetcher will read all image files present within the directory.
 
 		// now create the topology itself (spout -> facedetection --> drawer)
 		TopologyBuilder builder = new TopologyBuilder();

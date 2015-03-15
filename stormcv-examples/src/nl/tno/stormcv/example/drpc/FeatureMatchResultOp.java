@@ -1,4 +1,4 @@
-package nl.tno.stormcv.example.util;
+package nl.tno.stormcv.example.drpc;
 
 import java.util.Map;
 
@@ -12,11 +12,17 @@ public class FeatureMatchResultOp implements IResultOp {
 	private static final long serialVersionUID = -467562824142056924L;
 
 	private String result;
+
+	private boolean prettyJson;
+	
+	public FeatureMatchResultOp(boolean prettyJson) {
+		this.prettyJson = prettyJson;
+	}
 	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void initBatch(Map stormConf, TopologyContext context) throws Exception {
-		result = "No matching prototypes found!";
+		result = new String();
 	}
 
 	@Override
@@ -24,13 +30,19 @@ public class FeatureMatchResultOp implements IResultOp {
 		if(!(particle instanceof Frame)) return;
 		Frame frame = (Frame) particle;
 		if(frame.getMetadata().containsKey("strong_matches")){
-			this.result = (String)frame.getMetadata().get("strong_matches");
+			this.result += (String)frame.getMetadata().get("strong_matches");
 		}
 	}
 
 	@Override
 	public String getFinalResult() throws Exception {
-		return result;
+		if(prettyJson){
+			result = result.replaceAll(";" , ",\r\n\t");
+			return "{\r\n\t"+result.trim()+"\r\n}";
+		}else{
+			result.replaceAll(";",",");
+			return "{"+result.trim()+"}";
+		}
 	}
 
 }

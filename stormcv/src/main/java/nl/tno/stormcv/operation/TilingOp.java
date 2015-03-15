@@ -79,7 +79,7 @@ public class TilingOp implements ISingleInputOperation<Frame> {
 				box = box.intersection(frame.getBoundingBox());
 				BufferedImage tile = image.getSubimage(box.x, box.y, box.width, box.height);
 				byte[] buffer = ImageUtils.imageToBytes(tile, imageType);
-				result.add(new Frame(frame.getRequestId(), frame.getStreamId()+"_"+tileIndex, frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), box));
+				result.add(new Frame(frame.getStreamId()+"_"+tileIndex, frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), box));
 				tileIndex++;
 			}
 		}

@@ -60,6 +60,7 @@ public abstract class CVParticleBolt extends BaseRichBolt{
 			CVParticle cvt = deserialize(input);
 			List<? extends CVParticle> results = execute(cvt);
 			for(CVParticle output : results){
+				output.setRequestId(cvt.getRequestId());
 				CVParticleSerializer serializer = serializers.get(output.getClass().getName());
 				if(serializers.containsKey(output.getClass().getName())){
 					collector.emit(input, serializer.toTuple(output));

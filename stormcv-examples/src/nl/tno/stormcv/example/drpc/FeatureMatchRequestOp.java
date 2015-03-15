@@ -1,4 +1,4 @@
-package nl.tno.stormcv.example.util;
+package nl.tno.stormcv.example.drpc;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -17,7 +17,16 @@ import nl.tno.stormcv.model.serializer.CVParticleSerializer;
 import nl.tno.stormcv.model.serializer.FrameSerializer;
 import nl.tno.stormcv.util.connector.ConnectorHolder;
 import nl.tno.stormcv.util.connector.FileConnector;
+import nl.tno.stormcv.util.connector.LocalFileConnector;
 
+/**
+ * 
+ * Special operation that receives drpc requests. This implementation of IRequestOp simply
+ * gets a pointer to an image file, reads the image and returns it as a frame.
+ * 
+ * @author Corne Versloot
+ *
+ */
 public class FeatureMatchRequestOp implements IRequestOp<Frame> {
 
 	private static final long serialVersionUID = 5975348799605975615L;
@@ -46,7 +55,9 @@ public class FeatureMatchRequestOp implements IRequestOp<Frame> {
 		connector.moveTo(templateImage);
 		File imageFile = connector.getAsFile();
 		BufferedImage image = ImageIO.read(imageFile);
-		Frame queryFrame = new Frame(requestId, "nostream", 0, Frame.JPG_IMAGE, image, 0, new Rectangle(0,0,image.getWidth(), image.getHeight()));
+		Frame queryFrame = new Frame("nostream", 0, Frame.JPG_IMAGE, image, 0, new Rectangle(0,0,image.getWidth(), image.getHeight()));
+		queryFrame.getMetadata().put("uri", templateImage);
+		if(!(connector instanceof LocalFileConnector)) imageFile.delete();
 		result.add(queryFrame);
 		return result;
 	}

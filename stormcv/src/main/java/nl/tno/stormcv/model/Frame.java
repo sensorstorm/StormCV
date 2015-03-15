@@ -42,26 +42,26 @@ public class Frame extends CVParticle {
 	private Rectangle boundingBox;
 	private List<Feature> features = new ArrayList<Feature>();
 	
-	public Frame(long requestId, String streamId, long sequenceNr, String imageType, BufferedImage image, long timeStamp, Rectangle boundingBox, List<Feature> features) throws IOException {
-		this(requestId, streamId, sequenceNr, imageType, image, timeStamp, boundingBox);
+	public Frame(String streamId, long sequenceNr, String imageType, BufferedImage image, long timeStamp, Rectangle boundingBox, List<Feature> features) throws IOException {
+		this(streamId, sequenceNr, imageType, image, timeStamp, boundingBox);
 		if(features != null) this.features = features;
 	}
 	
-	public Frame(long requestId, String streamId, long sequenceNr, String imageType, BufferedImage image, long timeStamp, Rectangle boundingBox ) throws IOException {
-		super(requestId, streamId, sequenceNr);
+	public Frame(String streamId, long sequenceNr, String imageType, BufferedImage image, long timeStamp, Rectangle boundingBox ) throws IOException {
+		super( streamId, sequenceNr);
 		this.imageType = imageType;
 		setImage(image);
 		this.timeStamp = timeStamp;
 		this.boundingBox = boundingBox;
 	}
 	
-	public Frame(long requestId, String streamId, long sequenceNr, String imageType, byte[] image, long timeStamp, Rectangle boundingBox, List<Feature> features) {
-		this(requestId, streamId, sequenceNr, imageType, image, timeStamp, boundingBox);
+	public Frame(String streamId, long sequenceNr, String imageType, byte[] image, long timeStamp, Rectangle boundingBox, List<Feature> features) {
+		this(streamId, sequenceNr, imageType, image, timeStamp, boundingBox);
 		if(features != null) this.features = features;
 	}
 	
-	public Frame(long requestId, String streamId, long sequenceNr, String imageType, byte[] image, long timeStamp, Rectangle boundingBox ) {
-		super(requestId, streamId, sequenceNr);
+	public Frame(String streamId, long sequenceNr, String imageType, byte[] image, long timeStamp, Rectangle boundingBox ) {
+		super(streamId, sequenceNr);
 		this.imageType = imageType;
 		this.imageBytes = image;
 		this.timeStamp = timeStamp;

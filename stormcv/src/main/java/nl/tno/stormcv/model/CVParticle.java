@@ -24,7 +24,7 @@ import backtype.storm.tuple.Tuple;
 public abstract class CVParticle implements Comparable<CVParticle>{
 	
 	private Tuple tuple;
-	private long requestId;
+	private long requestId = -1;
 	private String streamId;
 	private long sequenceNr;
 	private HashMap<String, Object> metadata = new HashMap<String, Object>();
@@ -36,10 +36,10 @@ public abstract class CVParticle implements Comparable<CVParticle>{
 	 */
 	@SuppressWarnings("unchecked")
 	public CVParticle(Tuple tuple){
-		this(tuple.getLongByField(CVParticleSerializer.REQUESTID), 
-				tuple.getStringByField(CVParticleSerializer.STREAMID), 
+		this(tuple.getStringByField(CVParticleSerializer.STREAMID), 
 				tuple.getLongByField(CVParticleSerializer.SEQUENCENR));
 		this.tuple = tuple;
+		this.setRequestId(tuple.getLongByField(CVParticleSerializer.REQUESTID));
 		this.setMetadata((HashMap<String, Object>)tuple.getValueByField(CVParticleSerializer.METADATA));
 	}
 	
@@ -48,8 +48,7 @@ public abstract class CVParticle implements Comparable<CVParticle>{
 	 * @param streamId the id of the stream
 	 * @param sequenceNr the sequence number of the the information (used for ordering)
 	 */
-	public CVParticle(long requestId, String streamId, long sequenceNr){
-		this.requestId = requestId;
+	public CVParticle(String streamId, long sequenceNr){
 		this.streamId = streamId;
 		this.sequenceNr = sequenceNr;
 	}
@@ -74,6 +73,10 @@ public abstract class CVParticle implements Comparable<CVParticle>{
 		if(metadata != null){
 			this.metadata = metadata;
 		}
+	}
+	
+	public void setRequestId(long id){
+		this.requestId = id;
 	}
 	
 	public long getRequestId() {

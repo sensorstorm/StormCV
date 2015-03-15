@@ -113,7 +113,7 @@ public class ImageFetcher implements IFetcher<Frame> {
 			if(imgFile.startsWith("http://")) try{
 				BufferedImage image = ImageIO.read(new URL(imgFile));
 				byte[] buffer = ImageUtils.imageToBytes(image, imageType);
-				frame = new Frame(Long.MIN_VALUE, imgFile.substring(imgFile.lastIndexOf('/'))+"_"+imgFile.hashCode(), 0, imageType, buffer, 0, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+				frame = new Frame(imgFile.substring(imgFile.lastIndexOf('/'))+"_"+imgFile.hashCode(), 0, imageType, buffer, 0, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
 				frame.getMetadata().put("uri", imgFile);
 			} catch(Exception e){
 				logger.warn("Unable to get image from "+imgFile+" due to : "+e.getMessage(), e);	
@@ -126,7 +126,7 @@ public class ImageFetcher implements IFetcher<Frame> {
 					try{
 						BufferedImage image = ImageIO.read(file);
 						byte[] buffer = ImageUtils.imageToBytes(image, imageType);
-						frame = new Frame(Long.MIN_VALUE, file.getName()+"_"+file.hashCode(), 0, imageType, buffer, 0, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+						frame = new Frame(file.getName()+"_"+file.hashCode(), 0, imageType, buffer, 0, new Rectangle(0, 0, image.getWidth(), image.getHeight()));
 						frame.getMetadata().put("uri", imgFile);
 						if(!(fl instanceof LocalFileConnector)){
 							file.delete();

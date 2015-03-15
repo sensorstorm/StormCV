@@ -91,7 +91,8 @@ public class FeatureSerializer extends CVParticleSerializer<Feature> implements 
 				}
 			}
 		
-		Feature feature = new Feature(requestId, streamId, sequenceNr, name, duration, sparseDescriptors, denseDescriptor);
+		Feature feature = new Feature(streamId, sequenceNr, name, duration, sparseDescriptors, denseDescriptor);
+		feature.setRequestId(requestId);
 		return feature;
 	}
 

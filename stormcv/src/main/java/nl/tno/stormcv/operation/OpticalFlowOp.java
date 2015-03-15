@@ -98,7 +98,7 @@ public class OpticalFlowOp extends OpenCVOp<CVParticle> implements IBatchOperati
 			}
 		}
 		
-		Feature feature = new Feature(frame1.getRequestId(), frame1.getStreamId(), frame1.getSequenceNr(), name, frame2.getSequenceNr()-frame1.getSequenceNr(), null, dense);
+		Feature feature = new Feature(frame1.getStreamId(), frame1.getSequenceNr(), name, frame2.getSequenceNr()-frame1.getSequenceNr(), null, dense);
 		if(outputFrame){
 			frame1.getFeatures().add(feature);
 			result.add(frame1);

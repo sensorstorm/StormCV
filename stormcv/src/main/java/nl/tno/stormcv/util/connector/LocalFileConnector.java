@@ -73,7 +73,7 @@ public class LocalFileConnector implements FileConnector{
 	@Override
 	public void copyFile(File localFile, boolean delete) throws IOException {
 		Files.copy(localFile.toPath(), localLocation.toPath(), StandardCopyOption.REPLACE_EXISTING);
-		localFile.delete();
+		if(delete) localFile.delete();
 	}
 	
 	@Override
