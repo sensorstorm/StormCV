@@ -61,12 +61,12 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 	private float minStrongMatchDist = 0.5f;
 
 	private DescriptorMatcher matcher;
-	private HashMap<Mat, String> prototypes;
+	private HashMap<Integer, String> prototypes;
 	private List<String> protoLocations;
 
 	/**
-	 * Creates a PartialMatcher using the prototype images located in the provided list. Each URI
-	 * in the list is expanded to search for more prototypes (i.e. it is possible to provide a single directory) 
+	 * Creates a FeatureMatcherOperation using the prototype images located in the provided list. Each URI
+	 * in the list is expanded to search for more prototypes (i.e. it is posible to provide a single directory) 
 	 * @param prototypes list with URI's pointing to prototype images to be loaded
 	 * @param minStrongMatches minimum number of strong matching keypoints
 	 * @param minStrongMatchDist
@@ -112,7 +112,7 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 	protected void prepareOpenCVOp(Map conf, TopologyContext context) throws Exception {
 		this.connectorHolder = new ConnectorHolder(conf);
 		matcher = DescriptorMatcher.create( matcherType );
-		prototypes = new HashMap<Mat, String>();
+		prototypes = new HashMap<Integer, String>();
 		
 		int nrTasks = context.getComponentTasks(context.getThisComponentId()).size();
 		int taskIndex = context.getThisTaskIndex();
@@ -124,8 +124,8 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 			protoLocations.addAll(expand(dir));
 		}
 		
-		// read each prototype and add it to the list 
 		FileConnector fc = null;
+		List<Mat> training = new ArrayList<Mat>();
 		for(int i=taskIndex; i<protoLocations.size(); i+=nrTasks){
 			String imgFile = protoLocations.get(i);
 			fc = connectorHolder.getConnector(imgFile);
@@ -134,10 +134,13 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 			BufferedImage img = ImageIO.read(imageFile);
 			if(img == null) continue;
 			Mat proto = calculateDescriptors(img);
-			prototypes.put(proto, imgFile.substring(imgFile.lastIndexOf('/')+1));
+			prototypes.put(training.size(), imgFile.substring(imgFile.lastIndexOf('/')+1));
+			training.add(proto);
 			logger.info(this.getClass().getName()+"["+taskIndex+"] "+imgFile+" loaded and prepared for matching");
 			if(!(fc instanceof LocalFileConnector)) imageFile.delete();
 		}
+		matcher.add(training);
+		matcher.train();
 	}
 
 	@Override
@@ -167,23 +170,27 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 		
 		result.add(frame);
 		
-		String matchStr = new String();
-		for(Mat proto : prototypes.keySet()){
-			int strongMatches = 0;
-			List<MatOfDMatch> matches = new ArrayList<MatOfDMatch>();
-			matcher.knnMatch( frameDescriptor, proto, matches, 2 );
-			for ( int i = 0; i < matches.size(); i++ ){
-				DMatch dmatches[] = matches.get(i).toArray();
-				if ( dmatches[0].distance < minStrongMatchDist * dmatches[1].distance ){
-					strongMatches++;
-				}
+		
+		List<MatOfDMatch> mm = new ArrayList<MatOfDMatch>();
+		matcher.knnMatch( frameDescriptor, mm, 2 );
+		HashMap<Integer, MutableInt> idCount = new HashMap<Integer, MutableInt>();
+		for ( int i = 0; i < mm.size(); i++ ){
+			DMatch dmatches[] = mm.get(i).toArray();
+			if ( dmatches[0].distance < minStrongMatchDist * dmatches[1].distance ){
+				MutableInt mi = idCount.get(dmatches[0].imgIdx);
+				if(mi == null) idCount.put(dmatches[0].imgIdx, new MutableInt());
+				else mi.incr();
 			}
-			
-			if(strongMatches >= minStrongMatches){
-				matchStr += "\""+prototypes.get(proto)+"\":"+strongMatches+";";
+		}
+
+		String matchStr = new String();
+		for(int id : idCount.keySet()){
+			if(idCount.get(id).get() >= minStrongMatches){
+				matchStr += "\""+prototypes.get(id)+"\":"+idCount.get(id).get()+";";
 			}
 		}
 		frame.getMetadata().put("strong_matches", matchStr);
+		
 		return result;
 	}
 
@@ -253,6 +260,12 @@ public class PartialMatcher extends OpenCVOp<Frame> implements ISingleInputOpera
 		}
 		return m;
 		
+	}
+	
+	class MutableInt {
+		int value = 1; 
+		public void incr () { ++value;      }
+		public int  get ()       { return value; }
 	}
 }
 
