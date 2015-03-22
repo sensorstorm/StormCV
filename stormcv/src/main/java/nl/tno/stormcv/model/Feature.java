@@ -84,6 +84,7 @@ public class Feature extends CVParticle{
 		
 		Feature copyFeature = new Feature(new String(this.getStreamId()), this.getSequenceNr(), new String(this.getName()), this.getDuration(), 
 				sparseCopy, denseCopy);
+		copyFeature.setRequestId(getRequestId());
 		copyFeature.setMetadata(this.getMetadata());
 		return copyFeature;
 	}

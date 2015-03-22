@@ -54,13 +54,14 @@ public class VideoChunkSerializer extends CVParticleSerializer<VideoChunk> imple
 	}
 
 	@Override
-	protected VideoChunk readObject(Kryo kryo, Input input, Class<VideoChunk> clas, String streamId, long sequenceNr) throws Exception {
+	protected VideoChunk readObject(Kryo kryo, Input input, Class<VideoChunk> clas, long requestId, String streamId, long sequenceNr) throws Exception {
 		long duration = input.readLong();
 		int length = input.readInt();
 		byte[] video = input.readBytes(length);
 		String container = input.readString();
-		return new VideoChunk(streamId, sequenceNr, duration, video, container);
-		
+		VideoChunk chunk = new VideoChunk(streamId, sequenceNr, duration, video, container);
+		chunk.setRequestId(requestId);
+		return chunk;
 	}
 
 

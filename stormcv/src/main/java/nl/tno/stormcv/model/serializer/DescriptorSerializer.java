@@ -59,7 +59,7 @@ public class DescriptorSerializer extends CVParticleSerializer<Descriptor> imple
 	}
 
 	@Override
-	protected Descriptor readObject(Kryo kryo, Input input, Class<Descriptor> clas, String streamId, long sequenceNr) {
+	protected Descriptor readObject(Kryo kryo, Input input, Class<Descriptor> clas, long requestId, String streamId, long sequenceNr) {
 		Rectangle rectangle = new Rectangle(Math.round(input.readFloat()), Math.round(input.readFloat()), 
 				Math.round(input.readFloat()), Math.round(input.readFloat()));
 		long duration = input.readLong();
@@ -68,7 +68,9 @@ public class DescriptorSerializer extends CVParticleSerializer<Descriptor> imple
 		for(int i=0; i<length; i++){
 			values[i] = input.readFloat();
 		}
-		return new Descriptor(streamId, sequenceNr, rectangle, duration, values);
+		Descriptor result =  new Descriptor(streamId, sequenceNr, rectangle, duration, values);
+		result.setRequestId(requestId);
+		return result;
 	}
 
 }

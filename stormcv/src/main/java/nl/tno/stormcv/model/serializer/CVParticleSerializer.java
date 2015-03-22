@@ -25,6 +25,7 @@ import com.esotericsoftware.kryo.io.Output;
  */
 public abstract class CVParticleSerializer<Type extends CVParticle> extends Serializer<Type>{
 
+	public static final String REQUESTID = "requestID";
 	public static final String STREAMID = "streamID";
 	public static final String SEQUENCENR = "sequenceNR";
 	public static final String TYPE = "type";
@@ -48,7 +49,7 @@ public abstract class CVParticleSerializer<Type extends CVParticle> extends Seri
 	 * @throws IOException
 	 */
 	public Values toTuple(CVParticle object) throws IOException{
-		Values values = new Values(object.getClass().getName(), object.getStreamId(), object.getSequenceNr(), object.getMetadata());
+		Values values = new Values(object.getRequestId(), object.getClass().getName(), object.getStreamId(), object.getSequenceNr(), object.getMetadata());
 		values.addAll(getValues(object));
 		return values;
 	}
@@ -59,6 +60,7 @@ public abstract class CVParticleSerializer<Type extends CVParticle> extends Seri
 	 */
 	public Fields getFields(){
 		List<String> fields = new ArrayList<String>();
+		fields.add(REQUESTID);
 		fields.add(TYPE);
 		fields.add(STREAMID);
 		fields.add(SEQUENCENR);
@@ -71,11 +73,12 @@ public abstract class CVParticleSerializer<Type extends CVParticle> extends Seri
 	@SuppressWarnings("unchecked")
 	@Override
 	public Type read(Kryo kryo, Input input, Class<Type> clas) {
-		String id = input.readString();
-		long seq = input.readLong();
+		long requestId = input.readLong();
+		String streamId = input.readString();
+		long sequenceNr = input.readLong();
 		HashMap<String, Object> metadata = kryo.readObject(input, HashMap.class);
 		try {
-			Type result = readObject(kryo, input, clas, id, seq);
+			Type result = readObject(kryo, input, clas, requestId, streamId, sequenceNr);
 			result.setMetadata(metadata);
 			return result;
 		} catch (Exception e) {
@@ -86,6 +89,7 @@ public abstract class CVParticleSerializer<Type extends CVParticle> extends Seri
 
 	@Override
 	public void write(Kryo kryo, Output output, Type type) {
+		output.writeLong(type.getRequestId());
 		output.writeString(type.getStreamId());
 		output.writeLong(type.getSequenceNr());
 		kryo.writeObject(output, type.getMetadata());
@@ -112,11 +116,12 @@ public abstract class CVParticleSerializer<Type extends CVParticle> extends Seri
 	 * @param kryo
 	 * @param input
 	 * @param clas
+	 * @param requestId the requestId to be set in the object
 	 * @param streamId streamId the streamId to be set in the object
 	 * @param sequenceNr the sequenceNr to be set in the object
 	 * @return
 	 */
-	abstract protected Type readObject(Kryo kryo, Input input, Class<Type> clas, String streamId, long sequenceNr) throws Exception;
+	abstract protected Type readObject(Kryo kryo, Input input, Class<Type> clas, long requestId, String streamId, long sequenceNr) throws Exception;
 	
 	/**
 	 * Generates a Type Object from the provided tuple.

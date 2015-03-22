@@ -69,15 +69,15 @@ public class OpticalFlowOp extends OpenCVOp<CVParticle> implements IBatchOperati
 		if(input.size() != 2 || !(input.get(0) instanceof Frame) || !(input.get(1) instanceof Frame))
 			return result;
 		
-		Frame sf1 = (Frame)input.get(0);
-		Frame sf2 = (Frame)input.get(1);
+		Frame frame1 = (Frame)input.get(0);
+		Frame frame2 = (Frame)input.get(1);
 		
-		MatOfByte mob1 = new MatOfByte(sf1.getImageBytes());
+		MatOfByte mob1 = new MatOfByte(frame1.getImageBytes());
 		Mat image1 = Highgui.imdecode(mob1, Highgui.CV_LOAD_IMAGE_ANYCOLOR);
 		Mat image1Gray = new Mat( image1.size(), CvType.CV_8UC1 );
 		Imgproc.cvtColor( image1, image1Gray, Imgproc.COLOR_RGB2GRAY );
 		
-		MatOfByte mob2 = new MatOfByte(sf2.getImageBytes());
+		MatOfByte mob2 = new MatOfByte(frame2.getImageBytes());
 		Mat image2 = Highgui.imdecode(mob2, Highgui.CV_LOAD_IMAGE_ANYCOLOR);
 		Mat image2Gray = new Mat( image2.size(), CvType.CV_8UC1 );
 		Imgproc.cvtColor( image2, image2Gray, Imgproc.COLOR_RGB2GRAY );
@@ -98,10 +98,10 @@ public class OpticalFlowOp extends OpenCVOp<CVParticle> implements IBatchOperati
 			}
 		}
 		
-		Feature feature = new Feature(sf1.getStreamId(), sf1.getSequenceNr(), name, sf2.getSequenceNr()-sf1.getSequenceNr(), null, dense);
+		Feature feature = new Feature(frame1.getStreamId(), frame1.getSequenceNr(), name, frame2.getSequenceNr()-frame1.getSequenceNr(), null, dense);
 		if(outputFrame){
-			sf1.getFeatures().add(feature);
-			result.add(sf1);
+			frame1.getFeatures().add(feature);
+			result.add(frame1);
 		}else{
 			result.add(feature);
 		}

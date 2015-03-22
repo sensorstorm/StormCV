@@ -48,7 +48,7 @@ public class Frame extends CVParticle {
 	}
 	
 	public Frame(String streamId, long sequenceNr, String imageType, BufferedImage image, long timeStamp, Rectangle boundingBox ) throws IOException {
-		super(streamId, sequenceNr);
+		super( streamId, sequenceNr);
 		this.imageType = imageType;
 		setImage(image);
 		this.timeStamp = timeStamp;

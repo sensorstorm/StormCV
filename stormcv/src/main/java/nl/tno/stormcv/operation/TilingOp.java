@@ -65,8 +65,8 @@ public class TilingOp implements ISingleInputOperation<Frame> {
 		List<Frame> result = new ArrayList<Frame>();
 		if(!(particle instanceof Frame)) return result;
 		
-		Frame sf = (Frame) particle;
-		BufferedImage image = sf.getImage();
+		Frame frame = (Frame) particle;
+		BufferedImage image = frame.getImage();
 		if(image == null) return result;
 		if(image.getWidth()<2*cols || image.getHeight()<2*rows) return result;
 		
@@ -76,10 +76,10 @@ public class TilingOp implements ISingleInputOperation<Frame> {
 		for(int r=0; r<rows; r++){
 			for(int c=0; c<cols; c++){
 				Rectangle box = new Rectangle(c*width, r*height, width + pixelOverlap, height + pixelOverlap);
-				box = box.intersection(sf.getBoundingBox());
+				box = box.intersection(frame.getBoundingBox());
 				BufferedImage tile = image.getSubimage(box.x, box.y, box.width, box.height);
 				byte[] buffer = ImageUtils.imageToBytes(tile, imageType);
-				result.add(new Frame(sf.getStreamId()+"_"+tileIndex, sf.getSequenceNr(), imageType, buffer, sf.getTimestamp(), box));
+				result.add(new Frame(frame.getStreamId()+"_"+tileIndex, frame.getSequenceNr(), imageType, buffer, frame.getTimestamp(), box));
 				tileIndex++;
 			}
 		}

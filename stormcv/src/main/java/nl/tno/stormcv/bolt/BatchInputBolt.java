@@ -181,6 +181,7 @@ public class BatchInputBolt extends CVParticleBolt implements RemovalListener<CV
 				try{
 					List<? extends CVParticle> results = operation.execute(batch);
 					for(CVParticle result : results){
+						result.setRequestId(particle.getRequestId());
 						collector.emit(input, serializers.get(result.getClass().getName()).toTuple(result));
 					}
 				}catch(Exception e){
