@@ -64,7 +64,7 @@ public class E8_DRPCTopology {
 		// add bolt that matches queries it gets with the prototypes it has loaded upon the prepare.
 		// The prototypes are divided over the available tasks which means that each query has to be send to all tasks (use allGrouping)
 		// the matcher only reports a match if at least 1 strong match has been found (can be set to 0)
-		builder.addBolt(new SingleInputBolt(new PartialMatcher(prototypes, 1, 0.5f)), 2).allGrouping(); 
+		builder.addBolt(new SingleInputBolt(new PartialMatcher(prototypes, 0, 0.5f)), 2).allGrouping(); 
 		
 		// add a bolt that aggregates all the results it gets from the two matchers 
 		builder.addBolt(new BatchBolt(new FeatureMatchResultOp(true)), 1).fieldsGrouping(new Fields(CVParticleSerializer.REQUESTID));
