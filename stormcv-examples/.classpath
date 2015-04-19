@@ -36,7 +36,6 @@
 	<classpathentry kind="lib" path="lib/netty-3.2.2.Final.jar"/>
 	<classpathentry kind="lib" path="lib/netty-3.6.3.Final.jar"/>
 	<classpathentry kind="lib" path="lib/objenesis-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/opencv-248.jar"/>
 	<classpathentry kind="lib" path="lib/reflectasm-1.07-shaded.jar"/>
 	<classpathentry kind="lib" path="lib/ring-core-1.1.5.jar"/>
 	<classpathentry kind="lib" path="lib/ring-devel-0.3.11.jar"/>
@@ -59,5 +58,6 @@
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/storm-core-0.9.4.jar"/>
 	<classpathentry kind="lib" path="lib/stormcv-0.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/opencv-248.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
