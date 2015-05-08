@@ -35,7 +35,7 @@ public class E7_FetchOperateCombiTopology {
 		/**
 		 * Sets the OpenCV library to be used which depends on the system the topology is being executed on
 		 */
-		conf.put(StormCVConfig.STORMCV_OPENCV_LIB, "mac64_opencv_java248.dylib");
+		//conf.put(StormCVConfig.STORMCV_OPENCV_LIB, "mac64_opencv_java2411.dylib");
 		
 		conf.setNumWorkers(3); // number of workers in the topology
 		conf.setMaxSpoutPending(32); // maximum un-acked/un-failed frames per spout (spout blocks if this number is reached)

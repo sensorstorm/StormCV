@@ -37,7 +37,7 @@ public class NativeUtils {
 	 */
 	public static void load() throws RuntimeException, IOException{
 		try{
-			System.loadLibrary("opencv_java248");
+			System.loadLibrary("opencv_java2411");
 		} catch (UnsatisfiedLinkError e) {
 			String opencvLib = "/"+getOpenCVLib();
 			load(opencvLib);
@@ -68,11 +68,11 @@ public class NativeUtils {
 		// Detect OS
 		String osName = System.getProperty("os.name").toLowerCase();
 		if(osName.contains("win")){
-			return "win"+arch+"_opencv_java248.dll";
+			return "win"+arch+"_opencv_java2411.dll";
 		}else if(osName.contains("mac")){
-			return "mac"+arch+"_opencv_java248.dylib";
+			return "mac"+arch+"_opencv_java2411.dylib";
 		}else if(osName.contains("linux") || osName.contains("nix")){
-			return "linux"+arch+"_opencv_java248.so";
+			return "linux"+arch+"_opencv_java2411.so";
 		}else throw new RuntimeException("Unable to determine proper OS!");
 	}
 
