@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.tno</groupId>
 	<artifactId>stormcv</artifactId>
-	<version>0.7.2</version>
+	<version>0.7.3</version>
 	<name>StormCV</name>
 	<description>A Storm contribution to ease the development of computer vision topologies</description>
 	<url>https://github.com/sensorstorm/StormCV</url>
@@ -18,8 +18,8 @@
 		<developer>
 			<id>corneversloot</id>
 			<name>Corne Versloot</name>
-			<organization>TNO</organization>
-			<organizationUrl>http://www.tno.nl</organizationUrl>
+			<organization>Anchormen</organization>
+			<organizationUrl>https://www.anchormen.nl/</organizationUrl>
 		</developer>
 		<developer>
 			<name>John Schavemaker</name>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>org</groupId>
 			<artifactId>opencv</artifactId>
-			<version>2.4.8</version>
+			<version>2.4.11</version>
 		</dependency>
 		<dependency>
 			<groupId>xuggle</groupId>
@@ -80,14 +80,21 @@
 			<version>1.18</version>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
