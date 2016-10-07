@@ -1,3 +1,5 @@
+***Unfortunately, this project does not build anymore because the video reader it depends on (Xuggle) has been discontinued. Another video reader, like [Humble-Video](https://github.com/artclarke/humble-video), must be integrated in order for StormCV to work again.***
+
 ## StormCV
 StormCV enables the use of [Apache Storm](https://storm.apache.org/) for video processing by adding computer vision (CV) specific operations and data model. The platform enables the development of distributed video processing pipelines which can be deployed on Storm clusters. The screenshot below is taken from a distributed pipeline that calculates SIFT and SURF features in real time on six live streams. 
 ![example output](https://github.com/sensorstorm/StormCV/wiki/deployed_output.png)
