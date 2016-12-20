@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: clj-stacktrace:clj-stacktrace:0.2.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/clj-stacktrace/clj-stacktrace/0.2.2/clj-stacktrace-0.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/clj-stacktrace/clj-stacktrace/0.2.2/clj-stacktrace-0.2.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/clj-stacktrace/clj-stacktrace/0.2.2/clj-stacktrace-0.2.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
